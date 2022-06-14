@@ -16,14 +16,14 @@ data "alicloud_vpcs" "default" {
 
 data "alicloud_vswitches" "default" {
   vpc_id  = data.alicloud_vpcs.default.ids.0
-  zone_id = data.alicloud_db_zones.default.zones.1.id
+  zone_id = data.alicloud_zones.default.zones.0.id
 }
 
 resource "alicloud_vswitch" "default" {
   count        = length(data.alicloud_vswitches.default.ids) > 1 ? 0 : 1
   vpc_id       = data.alicloud_vpcs.default.ids.0
   cidr_block   = cidrsubnet(data.alicloud_vpcs.default.vpcs[0].cidr_block, 8, 15)
-  zone_id      = data.alicloud_db_zones.default.zones.1.id
+  zone_id      = data.alicloud_zones.default.zones.0.id
   vswitch_name = "subnet-for-local-test"
   tags         = {}
 }
@@ -37,7 +37,7 @@ data "alicloud_db_zones" "default" {
 }
 
 data "alicloud_db_instance_classes" "default" {
-  zone_id                  = data.alicloud_db_zones.default.zones.1.id
+  zone_id                  = data.alicloud_zones.default.zones.0.id
   engine                   = "MySQL"
   engine_version           = "8.0"
   category                 = "HighAvailability"
